@@ -5,13 +5,13 @@ from sklearn.model_selection import train_test_split
 
 
 def create_dataset(csv_file_name, target="style", merge=None, n=None, strategy='drop', keep_genre=True, flat=False,
-                   val_ratio=None, test_ratio=None, random_state=123, csv_output_path=None, chan_image_folder_path=None, image_folder_output_path=None):
+                   val_ratio=None, test_ratio=None, random_state=123, csv_output_path=None, image_folder_path=None, image_folder_output_path=None):
     '''
-    Create a new dataset from Chan's Wikiart dataset after merging, sampling and dropping some classes/images
+    Create a new dataset from  Wikiart dataset after merging, sampling and dropping some classes/images
 
         Parameters:
             csv_file_name: String
-                A path to a csv file containing all the information about Chan's Wikiart Dataset.
+                A path to a csv file containing all the information about Wikiart Dataset.
                 Use the function get_data() to generate this csv.
             target: String
                 The main target of the dataset: it may be 'style', 'genre' or 'artist'.
@@ -61,8 +61,8 @@ def create_dataset(csv_file_name, target="style", merge=None, n=None, strategy='
                         img1.jpg
                         img2.jpg
                         ...
-            chan_image_folder_path: string
-                Path to the folder containing images from Chan's wikiart dataset
+            image_folder_path: string
+                Path to the folder containing images from wikiart dataset
             image_folder_output_path
                 Path to create the new directory containing all the images of the new dataset
                 If 'image_folder_output_path' is 'None', no directory is created
@@ -150,60 +150,60 @@ def create_dataset(csv_file_name, target="style", merge=None, n=None, strategy='
         save_csv(df, csv_output_path, f"{csv_name}.csv")
 
     # Create new directory
-    if chan_image_folder_path and image_folder_output_path:
+    if image_folder_path and image_folder_output_path:
         dir_name = f"wikiart-target_{target}-class_{df[target].nunique()}-keepgenre_{keep_genre}"
         if merge: dir_name = f"{dir_name}-merge_{merge['name']}"
         if n: dir_name = f"{dir_name}-n_{n}_{strategy}"
         dir_name = f"{dir_name}-flat_{flat}"
-        create_directory(df, chan_image_folder_path,
+        create_directory(df, image_folder_path,
                          os.path.join(image_folder_output_path, dir_name))
 
     return df
 
-def get_data(chan_csv_folder_path,
-             chan_image_folder_path,
+def get_data(csv_folder_path,
+             image_folder_path,
              rm_csv_duplicate=True,
              rm_image_duplicate=True,
              csv_output_path=None
              ):
     '''
     Returns a complete dataframe containing all the information of all the files in
-    Chan's wikiart dataset.
+     wikiart dataset.
 
         Parameters:
-            chan_csv_folder_path: string
-                Path to the folder containing Chan's csv files
-            chan_image_folder_path: string
-                Path to the folder containing images from Chan's wikiart dataset
+            csv_folder_path: string
+                Path to the folder containing csv files
+            image_folder_path: string
+                Path to the folder containing images from wikiart dataset
             rm_duplicate: bool
-                Remove duplicatas from Chan's csv file
+                Remove duplicatas from csv file
             rm_image_duplicate: bool
-                Remove duplicatas from Chan's images
+                Remove duplicatas from images
             csv_output_path : String | None
-                Path to save a new csv file containing all the information about Chan's wikiart dataset
+                Path to save a new csv file containing all the information about wikiart dataset
                 If 'csv_output_path' is 'None', no csv is created
 
         Returns:
             data : pd.DataFrame
                 Dataframe containing all the information of all the images in the wikiart dataset,
-                as well as the genre labels and the train/val splits of cs-chan
+                as well as the genre labels and the train/val splits of cs-
     '''
 
-    cs_style = get_train_val_split(chan_csv_folder_path, 'style')
-    cs_genre = get_train_val_split(chan_csv_folder_path, 'genre')
-    cs_artist = get_train_val_split(chan_csv_folder_path, 'artist')
+    cs_style = get_train_val_split( _csv_folder_path, 'style')
+    cs_genre = get_train_val_split(csv_folder_path, 'genre')
+    cs_artist = get_train_val_split(csv_folder_path, 'artist')
 
     # There is one duplicata inside genre_train.csv / genre_test.csv
     # One image labelled with two genres
     if rm_csv_duplicate:
-        if not cs_genre[cs_genre["chan_image_path"].duplicated(keep='first')].empty:
+        if not cs_genre[cs_genre["image_path"].duplicated(keep='first')].empty:
             cs_genre.drop(
-                cs_genre[cs_genre["chan_image_path"].duplicated(
+                cs_genre[cs_genre["image_path"].duplicated(
                     keep='first')].index,
                 inplace=True)
 
-    style_list = [i for i in os.listdir(chan_image_folder_path) 
-        if os.path.isdir(os.path.join(chan_image_folder_path, i)) and i != '.DS_Store']
+    style_list = [i for i in os.listdir(image_folder_path) 
+        if os.path.isdir(os.path.join(image_folder_path, i)) and i != '.DS_Store']
 
 
     style = []
@@ -213,7 +213,7 @@ def get_data(chan_csv_folder_path,
     path = []
 
     for g in style_list:
-        files = os.listdir(os.path.join(chan_image_folder_path, g))
+        files = os.listdir(os.path.join(image_folder_path, g))
         style.extend([g] * len(files))
         file_name.extend(files)
         artist.extend([x.split('_')[0] for x in files])
@@ -221,33 +221,33 @@ def get_data(chan_csv_folder_path,
         path.extend([g + '/' + x for x in files])
 
     data = pd.DataFrame({
-        "chan_image_path": path,
+        "image_path": path,
         "style": style,
         "artist": artist,
         "title": title,
-        "chan_image_name": file_name
+        "image_name": file_name
     })
 
     data['style'] = data['style'].str.lower()
 
     data['image_name'] = (data['style'].str.replace(
-        "_", "-") + '_' + data['chan_image_name']).str.lower()
+        "_", "-") + '_' + data['image_name']).str.lower()
 
-    data = data.merge(cs_genre[["chan_image_path", "genre", "chan_split_genre"]],
-                      on="chan_image_path",
+    data = data.merge(cs_genre[["image_path", "genre", "split_genre"]],
+                      on="image_path",
                       how="outer")
-    data = data.merge(cs_style[["chan_image_path", "chan_split_style"]],
-                      on="chan_image_path",
+    data = data.merge(cs_style[["image_path", "split_style"]],
+                      on="image_path",
                       how="outer")
-    data = data.merge(cs_artist[["chan_image_path", "chan_split_artist"]],
-                      on="chan_image_path",
+    data = data.merge(cs_artist[["image_path", "split_artist"]],
+                      on="image_path",
                       how="outer")
 
     if rm_image_duplicate:
-        data.drop(data[data['chan_image_name'].duplicated(keep=False)].index,inplace=True)
+        data.drop(data[data['image_name'].duplicated(keep=False)].index,inplace=True)
 
-    data = data[["image_name", "style", "genre", "artist", "title", "chan_image_path",
-                 "chan_image_name", "chan_split_style", "chan_split_genre", "chan_split_artist"]]
+    data = data[["image_name", "style", "genre", "artist", "title", "image_path",
+                 "image_name", "split_style", "split_genre", "split_artist"]]
 
     if csv_output_path:
         os.makedirs(os.path.join(csv_output_path), exist_ok=True)
@@ -256,34 +256,34 @@ def get_data(chan_csv_folder_path,
 
     return data
 
-def get_train_val_split(chan_csv_folder_path, target, merge=None):
+def get_train_val_split(csv_folder_path, target, merge=None):
 
     if not isinstance(merge, pd.DataFrame):
-        merge = get_annotations(chan_csv_folder_path, target)
+        merge = get_annotations(csv_folder_path, target)
 
-    cs_train = pd.read_csv(os.path.join(chan_csv_folder_path, target + "_train.csv"),
+    cs_train = pd.read_csv(os.path.join(csv_folder_path, target + "_train.csv"),
                            header=None)
     cs_train["split"] = "train"
 
-    cs_val = pd.read_csv(os.path.join(chan_csv_folder_path, target + "_val.csv"),
+    cs_val = pd.read_csv(os.path.join(csv_folder_path, target + "_val.csv"),
                          header=None)
     cs_val["split"] = "val"
 
     cs = pd.concat([cs_train, cs_val], ignore_index=True)
-    cs.columns = ["chan_image_path", target + "_id", "chan_split_" + target]
+    cs.columns = ["image_path", target + "_id", "split_" + target]
 
     cs[target] = cs[target + "_id"].apply(lambda x: merge.loc[x][1])
-    cs["style_from_path"] = cs["chan_image_path"].apply(lambda x: x.split('/')[0])
-    cs["artist_from_path"] = cs["chan_image_path"].apply(
+    cs["style_from_path"] = cs["image_path"].apply(lambda x: x.split('/')[0])
+    cs["artist_from_path"] = cs["image_path"].apply(
         lambda x: x.split('/')[1].split('_')[0])
-    cs["title_from_path"] = cs["chan_image_path"].apply(
+    cs["title_from_path"] = cs["image_path"].apply(
         lambda x: x.split('/')[1].split('_')[1])
 
     return cs
 
 
-def get_annotations(chan_csv_folder_path, target):
-    return pd.read_csv(os.path.join(chan_csv_folder_path, target + "_class.txt"),
+def get_annotations(csv_folder_path, target):
+    return pd.read_csv(os.path.join(csv_folder_path, target + "_class.txt"),
                        header=None,
                        delim_whitespace=True)
     
@@ -293,7 +293,7 @@ def save_csv(data, csv_output_path, file_name):
 
 
 
-def create_directory(data, chan_image_folder_path, image_folder_output_path):
+def create_directory(data, image_folder_path, image_folder_output_path):
     j = 0
     os.makedirs(os.path.join(image_folder_output_path), exist_ok=True)
 
@@ -302,7 +302,7 @@ def create_directory(data, chan_image_folder_path, image_folder_output_path):
             os.path.join(image_folder_output_path, i[1]['image_path'])),
                     exist_ok=True)
 
-        copyfile(os.path.join(chan_image_folder_path, i[1]['chan_image_path']),
+        copyfile(os.path.join(image_folder_path, i[1]['image_path']),
                  os.path.join(image_folder_output_path, i[1]['image_path']))
         j += 1
 
