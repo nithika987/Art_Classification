@@ -1,5 +1,4 @@
 # **Art_Classification**
-# GSoC ArtExtract Task 1: Convolutional-Recurrent Architectures
 # Abstract
 This project aims to classify Style in the WikiArt dataset using a convolutional-recurrent architecture. The model follows a multi-phase training strategy with fine-tuning and semi-supervised learning. Evaluation metrics include accuracy, precision, recall, F1-score, and Top-5 accuracy. Outlier detection methods like Isolation Forest and SHAP will be used to identify misclassified artworks. The goal is to achieve >85% accuracy while handling ambiguous or mislabeled paintings.
 # Approach
