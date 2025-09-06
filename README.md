@@ -2,7 +2,6 @@
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python&logoColor=white)
 ![TensorFlow](https://img.shields.io/badge/TensorFlow-2.12-orange?logo=tensorflow&logoColor=white)
-![PyTorch](https://img.shields.io/badge/PyTorch-2.1-red?logo=pytorch&logoColor=white)
 ![Keras](https://img.shields.io/badge/Keras-2.12-red?logo=keras&logoColor=white)
 ![Dataset](https://img.shields.io/badge/Dataset-WikiArt-yellow)
 ![License](https://img.shields.io/badge/License-MIT-green)
