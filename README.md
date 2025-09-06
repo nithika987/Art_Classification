@@ -10,30 +10,30 @@
 
 ---
 
-## Abstract
+## 📝 Abstract
 This project classifies **art styles** in the [WikiArt dataset](https://github.com/cs-chan/ArtGAN/blob/master/WikiArt%2520Dataset/README.md) using a **convolutional-recurrent network**.  
 The model employs **multi-phase training** with fine-tuning and semi-supervised learning.  
 
 **Goals:**
-- Achieve **>85% accuracy**
-- Handle ambiguous or mislabeled artworks
-- Identify misclassified artworks using **Outlier Detection** (Isolation Forest, SHAP)
+- 🎯 Achieve **>85% accuracy**
+- 🖼 Handle ambiguous or mislabeled artworks
+- 🔍 Identify misclassified artworks using **Outlier Detection** (Isolation Forest, SHAP)
 
 ---
 
-## Dataset
+## 📦 Dataset
 - **Source:** [WikiArt Dataset](https://github.com/cs-chan/ArtGAN/blob/master/WikiArt%2520Dataset/README.md)  
 - **Utilities:** [dataset_utils.py](https://github.com/nithika987/Art_Classification/blob/main/utils/dataset_utils.py)  
 
 **Preprocessing Steps:**
-1. **Filtering & Cleaning:** Remove duplicate images and irrelevant entries
-2. **Merging & Sampling:** Merge/drop classes; fixed samples per class
-3. **Train/Validation/Test Split:** Based on Style, Genre, or Artist
-4. **Select 8 Styles:** Choose styles with clear visual distinction
-
+1. 🧹 **Filtering & Cleaning:** Remove duplicate images and irrelevant entries
+2. 🔀 **Merging & Sampling:** Merge/drop classes; fixed samples per class
+3. 🏋️ **Train/Validation/Test Split:** Based on Style, Genre, or Artist
+4. 🎨 **Select 8 Styles:** Choose styles with clear visual distinction
+   
 ---
 
-## Model Architecture
+## 🏗 Model Architecture
 - **Implementation:** [crn.py](https://github.com/nithika987/Art_Classification/blob/main/models/crn.py)
 
 **Components:**
@@ -46,7 +46,7 @@ The model employs **multi-phase training** with fine-tuning and semi-supervised 
 
 ---
 
-## Evaluation Metrics
+## 📊 Evaluation Metrics
 | Metric | Description |
 |--------|-------------|
 | Accuracy & Loss | Overall performance during training & validation |
@@ -71,9 +71,9 @@ The model employs **multi-phase training** with fine-tuning and semi-supervised 
 | **Weighted F1-score** | 0.17  |  
 
 **Observations:**
-- 1. **Overfitting Risk** – Train and validation accuracy are similar (~75%), but test accuracy drops to 71.3%, indicating moderate generalization but possible overfitting.
-- 2. **Class Imbalance Issue** – Some classes (e.g., Class_0, Class_1) have very low precision and recall, while dominant classes (Class_4, Class_5) perform better.
-- 3. **Poor Macro F1-score** – The model struggles with rare classes, as indicated by the low macro F1-score (0.12), suggesting the need for better data balancing or loss adjustments.  
+- 1. ⚠️ **Overfitting Risk** – Train and validation accuracy are similar (~75%), but test accuracy drops to 71.3%, indicating moderate generalization but possible overfitting.
+- 2. ⚖️ **Class Imbalance Issue** – Some classes (e.g., Class_0, Class_1) have very low precision and recall, while dominant classes (Class_4, Class_5) perform better.
+- 3. 🚀 **Poor Macro F1-score** – The model struggles with rare classes, as indicated by the low macro F1-score (0.12), suggesting the need for better data balancing or loss adjustments.  
 
 
 **Test Predictions:**
@@ -91,14 +91,14 @@ The model employs **multi-phase training** with fine-tuning and semi-supervised 
 
 ---
 
-## Future Scope
-- Address **class imbalance**
-- Expand to **Art, Style & Genre classification**
-- Improve **overall accuracy** with advanced techniques
+## 🌟 Future Scope
+- ⚖️ Address **class imbalance**
+- 🖼 Expand to **Art, Style & Genre classification**
+- 🚀 Improve **overall accuracy** with advanced techniques
 
 ---
 
-## Tags
+## 🏷 Tags
 `#DeepLearning` `#ComputerVision` `#ConvLSTM` `#Attention` `#FeaturePyramidNetwork` `#ArtClassification` `#EfficientNetV2` `#Python` `#PyTorch` `#TensorFlow`
 
 ---
